@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Ely Timer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Stay on task!" />
+    <link rel="icon" href="https://fav.farm/⏰️" />
+    <style>
+      * {
+      text-align: center;
+      font-family: sans-serif;
+      }
+      #timer {
+      width: 0%;
+      height: 20px;
+      background-color: #4CAF50;
+      }
+      #bar {
+      width: 20em;
+      background-color: #f3f3f3;
+      margin: 30px auto;
+      }
+      #numPicker {
+      width: 5em;
+      }
+      #goButton {
+      display: block;
+      margin: 10px auto;
+      font-family: 2em;
+      width: 70px;
+      height: 40px;
+      }
+      #soundPicker {
+      display: block;
+      margin: 20px auto;
+      }
+      img {
+      width: min(30em, 90%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Ely Timer</h1>
+    <button id="goButton">GO</button>
+    <div id="bar">
+      <div id="timer"></div>
+    </div>
+    <p id="timeDisplay">00:00</p>
+    <span> Shout at me every </span>
+    <input type="number" id="numPicker" min="1" value="25">
+    <span> minutes </span>
+    <select id="soundPicker">
+      <option value="stay-on-task.mp3">stay on task</option>
+      <option value="bell.mp3">bell</option>
+      <option value="amen-break.mp3">amen break</option>
+    </select>
+    <p>Made by <a href="https://liz.sex">Liz</a> for <a href="https://twitter.com/elymitra_">Ely</a></p>
+    <img src="tweet.png" />
+  </body>
+  <script>
+    function interval(){
+      return parseInt(document.getElementById('numPicker').value) * 60;
+    }
+    let countdown;
+    let timePassed = 0;
+    
+    function playAudio() {
+        let audio = new Audio();
+        audio.src = 'shouts/' + document.getElementById('soundPicker').value;
+        console.log(audio.src)
+        audio.play();
+    }
+    
+    document.getElementById('goButton').addEventListener('click', function() {
+        if (this.innerHTML === "GO") {
+            timePassed = 0;
+            playAudio();
+            update();
+            startCountdown();
+            this.innerHTML = "STOP";
+          } else {
+              this.innerHTML = "GO";
+              stopCountdown();
+            }
+      });
+    
+    function update() {
+        timePassed++;
+    
+        timeRemaining = interval() - timePassed;
+        let minutes = Math.floor(timeRemaining / 60);
+        let seconds = timeRemaining % 60;
+    
+        document.getElementById('timeDisplay').innerHTML = minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
+        document.getElementById('timer').style.width = (timePassed / interval() * 100) + "%";
+    
+        if (timePassed >= interval()) {
+            stopCountdown();
+            playAudio();
+            startCountdown();
+          }
+      }
+    
+    function startCountdown() {
+        countdown = setInterval(update, 1000);
+      }
+    
+    function stopCountdown() {
+        timePassed = 0;
+        clearInterval(countdown);
+        document.getElementById('timeDisplay').innerHTML = "00:00";
+        document.getElementById('timer').style.width = "0%";
+      }
+  </script>
+</html>
+
